@@ -1,7 +1,7 @@
 <template>
   <v-container>
 <div class="text-center">
-    <h1>Page d'inscription</h1>
+    <h1>Je m'inscris en tant que client</h1>
     <v-form
       ref="form"
       lazy-validation
@@ -10,7 +10,7 @@
         v-model="name"
         :counter="15"
         :rules="nameRules"
-        label="Name"
+        label="Nom & prénom"
         required
       ></v-text-field>
 
@@ -20,8 +20,28 @@
         label="E-mail"
         required
       ></v-text-field>
+      <v-text-field
+              v-model="password"
+              :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[rules.required, rules.min]"
+              :type="show1 ? 'text' : 'password'"
+              name="input-10-1"
+              label="Mot de passe"
+              hint="Au minimum 8 charactères"
+              counter
+              @click:append="show1 = !show1"
+            ></v-text-field>
+          <div v-if="error.length>0">
+      <v-alert
+        border="top"
+        color="red lighten-2"
+        dark
+      >
+        {{error}}
+      </v-alert>
+          </div>
       <v-btn
-        :disabled="email === '' || name ===''"
+        :disabled="email === '' || name ==='' || password.length<8"
         color="success"
         class="mr-4"
         @click="register"
@@ -42,6 +62,7 @@
 </template>
 
 <script>
+import AuthenticationClientService from "@/services/AuthenticationClientService";
 export default {
     data: () => ({
     name: '',
@@ -53,12 +74,33 @@ export default {
     emailRules: [
       v => !!v || "L'e-mail est requis",
       v => /.+@.+\..+/.test(v) || "L'e-mail doit être valide",
-    ]
+    ],
+      show1: false,
+      password: '',
+      rules: {
+        required: value => !!value || 'Requis.',
+        min: v => v.length >= 8 || 'Min 8 charactères'
+      },
+      error: ''
   }),
     methods: {
-    register () {
-      console.log(this.email)
-      console.log(this.name)
+    async register () {
+      try {
+        this.error = ''
+        const response = await AuthenticationClientService.register({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          metier: "client"
+        })
+        await this.$store.dispatch('setToken', response.data.token)
+        await this.$store.dispatch('setUser', response.data.user)
+          await this.$router.push({
+          name: 'ClientLogin'
+        })
+      } catch (error) {
+        this.error = error.response.data.error
+      }
     },
     reset () {
       this.$router.push({ name: 'HelloWorld' })

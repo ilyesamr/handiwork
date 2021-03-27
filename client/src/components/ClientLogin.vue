@@ -1,28 +1,95 @@
 <template>
-<div class="container">
-  <h1>Client login</h1>
-<form>
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-  </div>
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+ <v-container>
+<div class="text-center">
+   <h2>Je m'identifie en tant que client</h2>
+    <v-form
+      ref="form"
+      lazy-validation
+    >
+      <v-text-field
+        v-model="email"
+        :counter="15"
+        :rules="emailRules"
+        label="E-mail"
+        required
+      ></v-text-field>
+
+      <v-text-field
+        v-model="password"
+        :rules="passwordRules"
+        label="Mot de passe"
+        type="password"
+        required
+      ></v-text-field>
+       <div v-if="error.length>0">
+      <v-alert
+        border="top"
+        color="red lighten-2"
+        dark
+      >
+        {{error}}
+      </v-alert>
+          </div>
+      <router-link :to="{name: 'ClientRegister'}" class="myBtn">
+      <a href="#" class="float-left">Vous êtes nouveau ?</a><br><br>
+      </router-link>
+      <v-btn
+        :disabled="email === '' || password ===''"
+        color="success"
+        class="mr-4"
+        @click="login"
+      >
+        Login
+      </v-btn>
+
+      <v-btn
+        color="error"
+        class="mr-4"
+        @click="reset"
+      >
+        Cancel
+      </v-btn>
+    </v-form>
 </div>
+   </v-container>
 </template>
 
 <script>
+import AuthenticationClientService from "@/services/AuthenticationClientService";
 export default {
-  name: "ClientLogin"
+data: () => ({
+    password: '',
+    passwordRules: [
+      v => !!v || 'Le mot de passe est requis'
+    ],
+    email: '',
+    emailRules: [
+      v => !!v || "L'e-mail est requis",
+      v => /.+@.+\..+/.test(v) || "L'e-mail doit être valide",
+    ],
+  error: ''
+  }),
+    methods: {
+    async login () {
+      try{
+        this.error = ''
+        const response = await AuthenticationClientService.login({
+          email: this.email,
+          password: this.password
+        })
+        await this.$store.dispatch('setToken', response.data.token)
+        await this.$store.dispatch('setUser', response.data.client)
+        await this.$router.push({
+          name: 'Profile'
+        })
+      }catch (error){
+        this.error = error.response.data.error
+      }
+    },
+    reset () {
+      this.$router.push({ name: 'HelloWorld' })
+    }
+  }
 }
 </script>
 

@@ -6,7 +6,7 @@
       <h3>Vous êtes un : </h3>
       <br>
       <v-form>
-       <router-link :to="{name: 'ClientRegister'}">
+       <router-link :to="{name: 'ClientRegister'}" class="myBtn">
             <v-btn
               text
               color="success"
@@ -16,7 +16,7 @@
               Client
             </v-btn>
        </router-link>
-      <router-link :to="{name: 'ArtisanRegister'}">
+      <router-link :to="{name: 'ArtisanRegister'}" class="myBtn">
           <v-btn
             text
             color="error"
@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style scoped>
-.MyBtn{
+.myBtn{
   text-decoration: none;
 }
 </style>
