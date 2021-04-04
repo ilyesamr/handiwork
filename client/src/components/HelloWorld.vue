@@ -1,6 +1,5 @@
 <template>
 <div class="text-center">
-   <br>
       <h1 class="display-2">
         <strong>Trouver le bricoleur qu'il vous faut en un seul clic !</strong>
       </h1>
@@ -37,9 +36,9 @@
             C'est parti !
           </v-btn>
          </router-link>
-      </div><br>
+      </div>
       <div class="text-center">
-        <img src="@/assets/undraw_swipe_profiles.svg" alt="#" width="29%">
+        <img src="@/assets/undraw_swipe_profiles.svg" alt="#" width="25%">
       </div>
     </div>
 </template>
