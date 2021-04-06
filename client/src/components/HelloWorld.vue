@@ -38,7 +38,7 @@
          </router-link>
       </div>
       <div class="text-center">
-        <img src="@/assets/undraw_swipe_profiles.svg" alt="#" width="25%">
+        <img src="@/assets/undraw_swipe_profiles.svg" alt="#" width="23%">
       </div>
     </div>
 </template>
